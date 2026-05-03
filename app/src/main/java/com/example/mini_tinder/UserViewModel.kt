@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
-class UserViewModel : ViewModel() {
+class UserViewModel(
+    private val apiService: ApiService = RetrofitClient.instance
+) : ViewModel() {
 
     private var allUsers = emptyList<UserData>()
     val currentUser = mutableStateOf<UserData?>(null)
@@ -22,7 +24,7 @@ class UserViewModel : ViewModel() {
         viewModelScope.launch {
             isLoading.value = true
             try {
-                val response = RetrofitClient.instance.getUsers(count)
+                val response = apiService.getUsers(count)
                 allUsers = response.results
                 updateCurrentUser()
             } catch (e: Exception) {
